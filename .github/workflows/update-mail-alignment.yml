@@ -62,8 +62,13 @@ jobs:
       
       - name: Update README
         run: |
-          # Replace content between markers
-          sed -i '/<!-- DNS_STATUS_START -->/,/<!-- DNS_STATUS_END -->/c\<!-- DNS_STATUS_START -->\n'"$(cat dns-status.md)"'\n<!-- DNS_STATUS_END -->' README.md
+          # Replace content between markers using a more reliable method
+          awk '
+            /<!-- DNS_STATUS_START -->/ {print; system("cat dns-status.md"); f=1; next}
+            /<!-- DNS_STATUS_END -->/ {f=0}
+            !f
+          ' README.md > README.md.tmp
+          mv README.md.tmp README.md
       
       - name: Commit changes
         run: |
