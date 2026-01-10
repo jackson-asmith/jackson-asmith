@@ -38,6 +38,11 @@ A Ruby-based Apache log analyzer for quick insights into web server traffic and 
 ### ⚙️ [LinuxConfig](https://github.com/jackson-asmith/LinuxConfig)
 Automated Linux server configuration script for standardizing new system setups—because manual configuration is so 2010.
 
+## Email Alignment Status
+- 📨 Email authentication since 2018:
+<!-- DNS_STATUS_START -->
+<!-- DNS_STATUS_END -->
+
 ## Beyond the Terminal
 
 When I'm not in the command line, I'm:
