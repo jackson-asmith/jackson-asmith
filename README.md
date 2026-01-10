@@ -41,7 +41,7 @@ Automated Linux server configuration script for standardizing new system setups�
 ## Beyond the Terminal
 
 When I'm not in the command line, I'm:
-- 🏎️ Following Formula 1 (Team preference? Let's debate over coffee)
+- 🏎️ Suffering Scuderia Ferrari fan (yes, *that* kind of reliability engineering)
 - ⛷️ Chasing powder on the slopes
 - 🧘 Finding zen through yoga
 - 📚 Reading everything from sci-fi to philosophy
@@ -51,4 +51,4 @@ When I'm not in the command line, I'm:
 
 - 🌐 Website: [jacksonasmith.com](https://www.jacksonasmith.com)
 - 📍 Location: Philadelphia, PA
-- ☕ Always up for: Coffee chats about infrastructure, F1 strategy debates, ski recommendations, book swaps, or hiking trails
+- ☕ Always up for: Coffee chats about infrastructure, commiserating about Ferrari's pitwall calls, ski recommendations, book swaps, or hiking trails
