@@ -1,0 +1,73 @@
+name: Update Mail Alignment Status
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Check Mail Alignment Records
+        id: dns
+        run: |
+          DOMAIN="jacksonasmith.com"
+          
+          # Check MX (mail routing)
+          MX=$(dig +short MX $DOMAIN | head -1 | awk '{print $2}')
+          MX_STATUS="✅"
+          [[ -z "$MX" ]] && MX_STATUS="❌"
+          
+          # Check SPF (sender alignment)
+          SPF=$(dig +short TXT $DOMAIN | grep "v=spf1")
+          SPF_STATUS="✅"
+          [[ -z "$SPF" ]] && SPF_STATUS="❌"
+          
+          # Check DMARC (policy & alignment)
+          DMARC=$(dig +short TXT _dmarc.$DOMAIN | grep "v=DMARC1")
+          DMARC_POLICY="none"
+          if [[ "$DMARC" =~ "p=reject" ]]; then
+            DMARC_POLICY="reject"
+            DMARC_STATUS="✅"
+          elif [[ "$DMARC" =~ "p=quarantine" ]]; then
+            DMARC_POLICY="quarantine"
+            DMARC_STATUS="⚠️"
+          else
+            DMARC_STATUS="❌"
+          fi
+          
+          # Format timestamp
+          TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
+          
+          # Create mail alignment status table
+          cat > dns-status.md <<EOF
+          | Record | Status | Value |
+          |--------|--------|-------|
+          | MX | $MX_STATUS | \`${MX:-Not configured}\` |
+          | SPF | $SPF_STATUS | Configured |
+          | DMARC | $DMARC_STATUS | \`p=$DMARC_POLICY\` |
+          
+          *Last checked: $TIMESTAMP*
+          EOF
+          
+          echo "DNS_TABLE<<EOF" >> $GITHUB_OUTPUT
+          cat dns-status.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Update README
+        run: |
+          # Replace content between markers
+          sed -i '/<!-- DNS_STATUS_START -->/,/<!-- DNS_STATUS_END -->/c\<!-- DNS_STATUS_START -->\n'"$(cat dns-status.md)"'\n<!-- DNS_STATUS_END -->' README.md
+      
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git diff --quiet && git diff --staged --quiet || (git add README.md && git commit -m "📧 Update mail alignment status")
+          git push
