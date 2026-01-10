@@ -3,44 +3,123 @@ name: Update Mail Alignment Status
 on:
   schedule:
     - cron: '0 */6 * * *'  # Every 6 hours
-  workflow_dispatch:
+  workflow_dispatch:  # Manual trigger
   push:
     branches: [main]
+    paths:
+      - '.github/workflows/update-mail-alignment.yml'  # Only run if workflow changes
+
+permissions:
+  contents: write  # Explicitly declare needed permissions
 
 jobs:
   update-readme:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1  # Shallow clone for speed
       
       - name: Check Mail Alignment Records
         id: dns
         run: |
+          set -euo pipefail  # Fail on errors, undefined vars, pipe failures
+          
           DOMAIN="jacksonasmith.com"
           
-          # Check MX (mail routing)
-          MX=$(dig +short MX $DOMAIN | head -1 | awk '{print $2}')
-          MX_STATUS="✅"
-          [[ -z "$MX" ]] && MX_STATUS="❌"
-          
-          # Check SPF (sender alignment)
-          SPF=$(dig +short TXT $DOMAIN | grep "v=spf1")
-          SPF_STATUS="✅"
-          [[ -z "$SPF" ]] && SPF_STATUS="❌"
-          
-          # Check DMARC (policy & alignment)
-          DMARC=$(dig +short TXT _dmarc.$DOMAIN | grep "v=DMARC1")
-          DMARC_POLICY="none"
-          if [[ "$DMARC" =~ "p=reject" ]]; then
-            DMARC_POLICY="reject"
-            DMARC_STATUS="✅"
-          elif [[ "$DMARC" =~ "p=quarantine" ]]; then
-            DMARC_POLICY="quarantine"
-            DMARC_STATUS="⚠️"
-          else
-            DMARC_STATUS="❌"
+          echo "::group::Checking MX records"
+          # Check MX (mail routing) with timeout
+          if ! MX=$(timeout 10 dig +short MX $DOMAIN 2>/dev/null | head -1 | awk '{print $2}'); then
+            echo "::error::Failed to query MX records"
+            MX=""
           fi
+          
+          if [[ -n "$MX" ]]; then
+            MX_STATUS="✅"
+            echo "✓ MX record found: $MX"
+          else
+            MX_STATUS="❌"
+            echo "::warning::No MX record found"
+          fi
+          echo "::endgroup::"
+          
+          echo "::group::Checking SPF record"
+          # Check SPF (sender alignment) with validation
+          if SPF=$(timeout 10 dig +short TXT $DOMAIN 2>/dev/null | grep "v=spf1"); then
+            SPF_STATUS="✅"
+            echo "✓ SPF record found"
+            # Validate SPF syntax
+            if [[ ! "$SPF" =~ ([-~?]all|redirect=) ]]; then
+              echo "::warning::SPF record missing all mechanism"
+              SPF_STATUS="⚠️"
+            fi
+          else
+            SPF_STATUS="❌"
+            echo "::warning::No SPF record found"
+          fi
+          echo "::endgroup::"
+          
+          echo "::group::Checking DMARC policy"
+          # Check DMARC (policy & alignment) with validation
+          if DMARC=$(timeout 10 dig +short TXT _dmarc.$DOMAIN 2>/dev/null | grep "v=DMARC1"); then
+            echo "✓ DMARC record found"
+            
+            # Parse DMARC policy
+            if [[ "$DMARC" =~ p=reject ]]; then
+              DMARC_POLICY="reject"
+              DMARC_STATUS="✅"
+              echo "✓ DMARC policy: reject (strictest)"
+            elif [[ "$DMARC" =~ p=quarantine ]]; then
+              DMARC_POLICY="quarantine"
+              DMARC_STATUS="⚠️"
+              echo "⚠ DMARC policy: quarantine (consider upgrading to reject)"
+            elif [[ "$DMARC" =~ p=none ]]; then
+              DMARC_POLICY="none"
+              DMARC_STATUS="⚠️"
+              echo "⚠ DMARC policy: none (monitoring only)"
+            else
+              DMARC_POLICY="unknown"
+              DMARC_STATUS="❌"
+              echo "::warning::DMARC policy not found in record"
+            fi
+            
+            # Check for aggregate reporting
+            if [[ "$DMARC" =~ rua= ]]; then
+              echo "✓ DMARC aggregate reporting configured"
+            else
+              echo "::notice::Consider adding DMARC aggregate reporting (rua=)"
+            fi
+          else
+            DMARC_POLICY="none"
+            DMARC_STATUS="❌"
+            echo "::error::No DMARC record found"
+          fi
+          echo "::endgroup::"
+          
+          # Check for DKIM (optional, informational only)
+          echo "::group::Checking common DKIM selectors"
+          DKIM_FOUND=false
+          for selector in default google google2 k1 dkim mail; do
+            if timeout 5 dig +short TXT ${selector}._domainkey.$DOMAIN 2>/dev/null | grep -q "v=DKIM1"; then
+              echo "✓ DKIM selector found: $selector"
+              DKIM_FOUND=true
+              break
+            fi
+          done
+          if [[ "$DKIM_FOUND" == "false" ]]; then
+            echo "::notice::No common DKIM selectors found (this is informational only)"
+          fi
+          echo "::endgroup::"
+          
+          # Calculate overall score
+          SCORE=0
+          [[ "$MX_STATUS" == "✅" ]] && ((SCORE+=1))
+          [[ "$SPF_STATUS" == "✅" ]] && ((SCORE+=1))
+          [[ "$DMARC_STATUS" == "✅" ]] && ((SCORE+=1))
+          
+          echo "::notice::Mail alignment score: $SCORE/3"
           
           # Format timestamp
           TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
@@ -53,26 +132,78 @@ jobs:
           | SPF | $SPF_STATUS | Configured |
           | DMARC | $DMARC_STATUS | \`p=$DMARC_POLICY\` |
           
-          *Last checked: $TIMESTAMP*
+          *Last checked: $TIMESTAMP • Score: $SCORE/3*
           EOF
           
-          echo "DNS_TABLE<<EOF" >> $GITHUB_OUTPUT
-          cat dns-status.md >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          # Output for potential future use
+          echo "score=$SCORE" >> $GITHUB_OUTPUT
+          echo "dmarc_policy=$DMARC_POLICY" >> $GITHUB_OUTPUT
       
-      - name: Update README
+      - name: Validate DNS status file
         run: |
-          # Replace content between markers using a more reliable method
+          if [[ ! -f dns-status.md ]]; then
+            echo "::error::dns-status.md was not created"
+            exit 1
+          fi
+          
+          if [[ ! -s dns-status.md ]]; then
+            echo "::error::dns-status.md is empty"
+            exit 1
+          fi
+          
+          echo "✓ DNS status file validated"
+          echo "Contents:"
+          cat dns-status.md
+      
+      - name: Check if README needs update
+        id: check_changes
+        run: |
+          # Create temporary README with updated content
           awk '
             /<!-- DNS_STATUS_START -->/ {print; system("cat dns-status.md"); f=1; next}
             /<!-- DNS_STATUS_END -->/ {f=0}
             !f
           ' README.md > README.md.tmp
-          mv README.md.tmp README.md
+          
+          # Check if there are actual changes
+          if diff -q README.md README.md.tmp > /dev/null 2>&1; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "::notice::No changes detected, README is already up to date"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "::notice::Changes detected, will update README"
+            mv README.md.tmp README.md
+          fi
       
       - name: Commit changes
+        if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git diff --quiet && git diff --staged --quiet || (git add README.md && git commit -m "📧 Update mail alignment status")
-          git push
+          git add README.md
+          git commit -m "📧 Update mail alignment status [skip ci]"
+      
+      - name: Push changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+      
+      - name: Create check run summary
+        if: always()
+        run: |
+          echo "## 📧 Mail Alignment Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat dns-status.md >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Configuration Details" >> $GITHUB_STEP_SUMMARY
+          echo "- Domain: \`jacksonasmith.com\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Check frequency: Every 6 hours" >> $GITHUB_STEP_SUMMARY
+          echo "- DMARC Policy: \`${{ steps.dns.outputs.dmarc_policy }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Score: ${{ steps.dns.outputs.score }}/3" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::Mail alignment check workflow failed. Please review the logs."
