@@ -41,6 +41,13 @@ Automated Linux server configuration script for standardizing new system setups�
 ## Email Alignment Status
 - 📨 Email authentication since 2018:
 <!-- DNS_STATUS_START -->
+| Record | Status | Value |
+|--------|--------|-------|
+| MX | ✅ | `aspmx.l.google.com.` |
+| SPF | ✅ | Configured |
+| DMARC | ✅ | `p=reject` |
+
+*Last checked: 2026-01-10 03:10 UTC*
 <!-- DNS_STATUS_END -->
 
 ## Beyond the Terminal
