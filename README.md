@@ -47,7 +47,7 @@ Automated Linux server configuration script for standardizing new system setups�
 | SPF | ✅ | Configured |
 | DMARC | ✅ | `p=reject` |
 
-*Last checked: 2026-01-11 06:26 UTC • Score: 3/3*
+*Last checked: 2026-01-11 12:33 UTC • Score: 3/3*
 <!-- DNS_STATUS_END -->
 
 ## Beyond the Terminal
