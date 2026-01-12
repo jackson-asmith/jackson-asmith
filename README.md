@@ -38,8 +38,10 @@ A Ruby-based Apache log analyzer for quick insights into web server traffic and 
 ### ⚙️ [LinuxConfig](https://github.com/jackson-asmith/LinuxConfig)
 Automated Linux server configuration script for standardizing new system setups—because manual configuration is so 2010.
 
-## Email Alignment Status
-- 📨 Email authentication since 2018:
+### 📨 [Email Alignment Checker](https://github.com/jackson-asmith/jackson-asmith/tree/main/.github/workflows)
+CI/CD pipeline for automated DNS validation for DMARC configuration with testing and monitoring.
+
+**Relatively live status of jacksonasmith.com DMARC alignment:**
 <!-- DNS_STATUS_START -->
 | Record | Status | Value |
 |--------|--------|-------|
