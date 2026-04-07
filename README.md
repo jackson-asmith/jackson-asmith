@@ -57,7 +57,7 @@ Scheduled DNS monitoring pipeline for automated DMARC configuration verification
 | SPF | ✅ | Configured |
 | DMARC | ✅ | `p=reject` |
 
-*Last checked: 2026-04-07 13:10 UTC • Score: 3/3*
+*Last checked: 2026-04-07 17:04 UTC • Score: 3/3*
 <!-- DNS_STATUS_END -->
 
 ## Beyond the Terminal
