@@ -1,26 +1,34 @@
 # Hi, I'm Jackson
 
-I'm an Infrastructure & Reliability Engineer based in Philadelphia with 10+ years of experience designing resilient systems and driving automation across hybrid cloud environments. I specialize in eliminating operational toil, architecting high-availability solutions, and modernizing legacy infrastructure. When I'm not building platforms or writing automation, you'll find me on hiking trails, carving ski slopes, or finding balance on the yoga mat. I'm equally at home debugging infrastructure-as-code, watching Formula 1, or getting lost in a good novel with a well-earned beer.
+I'm a Software Engineer based in Philadelphia with 10+ years of experience at the intersection of infrastructure and software development. I bring an operator's instinct to software: I care about correctness, testability, and systems that don't page someone at 3am. These days I'm focused on building reliable software—establishing test suites, modernizing legacy codebases, and applying the same rigor I brought to infrastructure to the software that runs on top of it. When I'm not writing code or automation, you'll find me on hiking trails, carving ski slopes, or finding balance on the yoga mat. I'm equally at home debugging a flaky test suite, watching Formula 1, or getting lost in a good novel with a well-earned beer.
 
 ## What I Work With
+
+**Software Engineering**
+- Python, PowerShell, Ruby, Bash
+- Test suite development & code modernization
+- Microsoft Graph API & email infrastructure
 
 **Cloud & Infrastructure**
 - Azure, AWS, VMware vSphere
 - Infrastructure-as-Code (Terraform, Ansible)
 - High-availability architecture & disaster recovery
 
-**Automation & Observability**
-- PowerShell, Python, Bash, Ruby
+**Observability & Automation**
 - New Relic, Zabbix, Prometheus
 - OpenTelemetry instrumentation
+- Self-hosted LLM infrastructure (Mistral, Mixtral)
 
 **Platform Engineering**
 - Linux/Windows server architecture
 - SQL Server clustering & availability groups
-- Enterprise backup & storage solutions
+- Zero Trust deployment & PKI management
 
 ## Recent Wins
 
+- Modernizing email delivery pipeline via Microsoft Graph API migration
+- Established test suites and driving phased code modernization strategy
+- Reduced operational escalations by 50% through infrastructure improvements
 - Architected three-node SQL availability cluster achieving 99.99% uptime
 - Saved $400K+ annually through automated patching pipeline
 - Reduced vulnerability exposure by 70% via systematic automation
@@ -39,7 +47,7 @@ A Ruby-based Apache log analyzer for quick insights into web server traffic and 
 Automated Linux server configuration script for standardizing new system setups—because manual configuration is so 2010.
 
 ### [Email Alignment Checker](https://github.com/jackson-asmith/jackson-asmith/tree/main/.github/workflows)
-Scheduled DNS monitoring pipeline for automated for DMARC configuration verification with testing and monitoring.
+Scheduled DNS monitoring pipeline for automated DMARC configuration verification with testing and monitoring.
 
 **Relatively live status of [jacksonasmith.com](https://jacksonasmith.com) DMARC alignment:**
 <!-- DNS_STATUS_START -->
