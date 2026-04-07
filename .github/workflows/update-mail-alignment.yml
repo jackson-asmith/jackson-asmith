@@ -131,7 +131,7 @@ jobs:
           | MX | $MX_STATUS | \`${MX:-Not configured}\` |
           | SPF | $SPF_STATUS | Configured |
           | DMARC | $DMARC_STATUS | \`p=$DMARC_POLICY\` |
-          
+
           *Last checked: $TIMESTAMP • Score: $SCORE/3*
           EOF
           
@@ -185,10 +185,7 @@ jobs:
       
       - name: Push changes
         if: steps.check_changes.outputs.has_changes == 'true'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+        run: git push origin HEAD:${{ github.ref_name }}
       
       - name: Create check run summary
         if: always()
@@ -203,6 +200,10 @@ jobs:
           echo "- DMARC Policy: \`${{ steps.dns.outputs.dmarc_policy }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- Score: ${{ steps.dns.outputs.score }}/3" >> $GITHUB_STEP_SUMMARY
       
+      - name: Cleanup
+        if: always()
+        run: rm -f dns-status.md README.md.tmp
+
       - name: Notify on failure
         if: failure()
         run: |
