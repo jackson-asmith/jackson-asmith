@@ -158,20 +158,22 @@ jobs:
       - name: Check if README needs update
         id: check_changes
         run: |
-          # Create temporary README with updated content
-          awk '
-            /<!-- DNS_STATUS_START -->/ {print; system("cat dns-status.md"); f=1; next}
-            /<!-- DNS_STATUS_END -->/ {f=0}
-            !f
-          ' README.md > README.md.tmp
-          
-          # Check if there are actual changes
-          if diff -q README.md README.md.tmp > /dev/null 2>&1; then
+          # Compare only record rows — timestamp is excluded so it doesn't
+          # trigger a commit when DNS records haven't actually changed
+          NEW_RECORDS=$(grep -E '^\s*\| (MX|SPF|DMARC) \|' dns-status.md)
+          CURRENT_RECORDS=$(awk '/<!-- DNS_STATUS_START -->/,/<!-- DNS_STATUS_END -->/' README.md | grep -E '^\s*\| (MX|SPF|DMARC) \|')
+
+          if [[ "$NEW_RECORDS" == "$CURRENT_RECORDS" ]]; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "::notice::No changes detected, README is already up to date"
+            echo "::notice::DNS records unchanged, skipping update"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "::notice::Changes detected, will update README"
+            echo "::notice::DNS record changes detected, updating README"
+            awk '
+              /<!-- DNS_STATUS_START -->/ {print; system("cat dns-status.md"); f=1; next}
+              /<!-- DNS_STATUS_END -->/ {f=0}
+              !f
+            ' README.md > README.md.tmp
             mv README.md.tmp README.md
           fi
       
