@@ -2,40 +2,50 @@ name: Update Mail Alignment Status
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
-  workflow_dispatch:  # Manual trigger
+    - cron: "0 */6 * * *" # Every 6 hours
+  workflow_dispatch: # Manual trigger
   push:
     branches: [main]
     paths:
-      - '.github/workflows/update-mail-alignment.yml'  # Only run if workflow changes
+      - ".github/workflows/update-mail-alignment.yml" # Only run if workflow changes
 
 permissions:
-  contents: write  # Explicitly declare needed permissions
+  contents: write # Commit README updates
+  actions: write # Re-enable this workflow's schedule (inactivity keepalive)
+
+concurrency:
+  group: mail-alignment
+  cancel-in-progress: false
 
 jobs:
   update-readme:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1  # Shallow clone for speed
-      
+          fetch-depth: 1 # Shallow clone for speed
+
       - name: Check Mail Alignment Records
         id: dns
         run: |
           set -euo pipefail  # Fail on errors, undefined vars, pipe failures
-          
+
           DOMAIN="jacksonasmith.com"
-          
+          DIG="dig +short +time=5 +tries=3"
+          QUERY_ERROR=false  # resolver failure ≠ record absent; gates the README update
+
           echo "::group::Checking MX records"
-          # Check MX (mail routing) with timeout
-          if ! MX=$(timeout 10 dig +short MX $DOMAIN 2>/dev/null | head -1 | awk '{print $2}'); then
-            echo "::error::Failed to query MX records"
-            MX=""
+          MX=""
+          if MX_RAW=$($DIG MX $DOMAIN); then
+            # +short output is not priority-ordered; sort so the primary MX is stable
+            MX=$(echo "$MX_RAW" | sort -n | head -1 | awk '{print $2}')
+          else
+            echo "::error::MX query failed (resolver error)"
+            QUERY_ERROR=true
           fi
-          
+
           if [[ -n "$MX" ]]; then
             MX_STATUS="✅"
             echo "✓ MX record found: $MX"
@@ -44,47 +54,74 @@ jobs:
             echo "::warning::No MX record found"
           fi
           echo "::endgroup::"
-          
+
           echo "::group::Checking SPF record"
-          # Check SPF (sender alignment) with validation
-          if SPF=$(timeout 10 dig +short TXT $DOMAIN 2>/dev/null | grep "v=spf1"); then
+          SPF=""
+          if TXT_RAW=$($DIG TXT $DOMAIN); then
+            SPF=$(echo "$TXT_RAW" | grep "v=spf1" || true)
+          else
+            echo "::error::TXT query failed (resolver error)"
+            QUERY_ERROR=true
+          fi
+
+          SPF_VALUE="Not configured"
+          if [[ -n "$SPF" ]]; then
             SPF_STATUS="✅"
             echo "✓ SPF record found"
-            # Validate SPF syntax
-            if [[ ! "$SPF" =~ ([-~?]all|redirect=) ]]; then
+            if [[ "$SPF" =~ redirect= ]]; then
+              SPF_VALUE="redirect"
+            elif [[ "$SPF" =~ ([-~?+]?)all ]]; then
+              SPF_VALUE="${BASH_REMATCH[1]}all"
+            else
               echo "::warning::SPF record missing all mechanism"
               SPF_STATUS="⚠️"
+              SPF_VALUE="missing all"
             fi
           else
             SPF_STATUS="❌"
             echo "::warning::No SPF record found"
           fi
           echo "::endgroup::"
-          
+
           echo "::group::Checking DMARC policy"
-          # Check DMARC (policy & alignment) with validation
-          if DMARC=$(timeout 10 dig +short TXT _dmarc.$DOMAIN 2>/dev/null | grep "v=DMARC1"); then
+          DMARC=""
+          if DMARC_RAW=$($DIG TXT _dmarc.$DOMAIN); then
+            DMARC=$(echo "$DMARC_RAW" | grep "v=DMARC1" || true)
+          else
+            echo "::error::DMARC query failed (resolver error)"
+            QUERY_ERROR=true
+          fi
+
+          # Anchor p= to the start of a tag so sp=/np= (subdomain policy) never matches
+          re_policy='(^|;)[[:space:]]*p=(reject|quarantine|none)'
+
+          if [[ -n "$DMARC" ]]; then
             echo "✓ DMARC record found"
-            
-            # Parse DMARC policy
-            if [[ "$DMARC" =~ p=reject ]]; then
-              DMARC_POLICY="reject"
-              DMARC_STATUS="✅"
-              echo "✓ DMARC policy: reject (strictest)"
-            elif [[ "$DMARC" =~ p=quarantine ]]; then
-              DMARC_POLICY="quarantine"
-              DMARC_STATUS="⚠️"
-              echo "⚠ DMARC policy: quarantine (consider upgrading to reject)"
-            elif [[ "$DMARC" =~ p=none ]]; then
-              DMARC_POLICY="none"
-              DMARC_STATUS="⚠️"
-              echo "⚠ DMARC policy: none (monitoring only)"
-            else
-              DMARC_POLICY="unknown"
-              DMARC_STATUS="❌"
-              echo "::warning::DMARC policy not found in record"
+
+            DMARC_POLICY="unknown"
+            if [[ "$DMARC" =~ $re_policy ]]; then
+              DMARC_POLICY="${BASH_REMATCH[2]}"
             fi
-            
+
+            case "$DMARC_POLICY" in
+              reject)
+                DMARC_STATUS="✅"
+                echo "✓ DMARC policy: reject (strictest)"
+                ;;
+              quarantine)
+                DMARC_STATUS="⚠️"
+                echo "⚠ DMARC policy: quarantine (consider upgrading to reject)"
+                ;;
+              none)
+                DMARC_STATUS="⚠️"
+                echo "⚠ DMARC policy: none (monitoring only)"
+                ;;
+              *)
+                DMARC_STATUS="❌"
+                echo "::warning::DMARC policy not found in record"
+                ;;
+            esac
+
             # Check for aggregate reporting
             if [[ "$DMARC" =~ rua= ]]; then
               echo "✓ DMARC aggregate reporting configured"
@@ -97,71 +134,88 @@ jobs:
             echo "::error::No DMARC record found"
           fi
           echo "::endgroup::"
-          
-          # Check for DKIM (optional, informational only)
+
+          # Check for DKIM (informational only, not scored)
           echo "::group::Checking common DKIM selectors"
-          DKIM_FOUND=false
+          DKIM_SELECTOR=""
           for selector in default google google2 k1 dkim mail; do
-            if timeout 5 dig +short TXT ${selector}._domainkey.$DOMAIN 2>/dev/null | grep -q "v=DKIM1"; then
+            if $DIG TXT ${selector}._domainkey.$DOMAIN 2>/dev/null | grep -q "v=DKIM1"; then
               echo "✓ DKIM selector found: $selector"
-              DKIM_FOUND=true
+              DKIM_SELECTOR=$selector
               break
             fi
           done
-          if [[ "$DKIM_FOUND" == "false" ]]; then
+          if [[ -n "$DKIM_SELECTOR" ]]; then
+            DKIM_STATUS="✅"
+          else
+            DKIM_STATUS="➖"
             echo "::notice::No common DKIM selectors found (this is informational only)"
           fi
           echo "::endgroup::"
-          
-          # Calculate overall score
+
+          # if/fi rather than `[[ ]] && ((...))`: a non-✅ status would otherwise
+          # return non-zero from the && list and trip set -e
           SCORE=0
-          [[ "$MX_STATUS" == "✅" ]] && ((SCORE+=1))
-          [[ "$SPF_STATUS" == "✅" ]] && ((SCORE+=1))
-          [[ "$DMARC_STATUS" == "✅" ]] && ((SCORE+=1))
-          
+          if [[ "$MX_STATUS" == "✅" ]]; then SCORE=$((SCORE+1)); fi
+          if [[ "$SPF_STATUS" == "✅" ]]; then SCORE=$((SCORE+1)); fi
+          if [[ "$DMARC_STATUS" == "✅" ]]; then SCORE=$((SCORE+1)); fi
+
           echo "::notice::Mail alignment score: $SCORE/3"
-          
+
+          if [[ "$QUERY_ERROR" == "true" ]]; then
+            echo "::warning::One or more DNS queries failed; README will not be updated this run"
+          fi
+
           # Format timestamp
           TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M UTC')
-          
+
           # Create mail alignment status table
           cat > dns-status.md <<EOF
           | Record | Status | Value |
           |--------|--------|-------|
           | MX | $MX_STATUS | \`${MX:-Not configured}\` |
-          | SPF | $SPF_STATUS | Configured |
+          | SPF | $SPF_STATUS | \`$SPF_VALUE\` |
           | DMARC | $DMARC_STATUS | \`p=$DMARC_POLICY\` |
+          | DKIM | $DKIM_STATUS | \`${DKIM_SELECTOR:-not detected}\` |
 
-          *Last checked: $TIMESTAMP • Score: $SCORE/3*
+          *Last updated: $TIMESTAMP • Score: $SCORE/3 (DKIM informational)*
           EOF
-          
-          # Output for potential future use
+
+          # Output for later steps
           echo "score=$SCORE" >> $GITHUB_OUTPUT
           echo "dmarc_policy=$DMARC_POLICY" >> $GITHUB_OUTPUT
-      
+          echo "query_error=$QUERY_ERROR" >> $GITHUB_OUTPUT
+
       - name: Validate DNS status file
         run: |
           if [[ ! -f dns-status.md ]]; then
             echo "::error::dns-status.md was not created"
             exit 1
           fi
-          
+
           if [[ ! -s dns-status.md ]]; then
             echo "::error::dns-status.md is empty"
             exit 1
           fi
-          
+
           echo "✓ DNS status file validated"
           echo "Contents:"
           cat dns-status.md
-      
+
       - name: Check if README needs update
         id: check_changes
+        # Don't write resolver flakiness into the README as if records changed
+        if: steps.dns.outputs.query_error != 'true'
         run: |
+          if ! grep -q 'DNS_STATUS_START' README.md || ! grep -q 'DNS_STATUS_END' README.md; then
+            echo "::error::README.md is missing the DNS_STATUS_START/END markers"
+            exit 1
+          fi
+
           # Compare only record rows — timestamp is excluded so it doesn't
           # trigger a commit when DNS records haven't actually changed
-          NEW_RECORDS=$(grep -E '^\s*\| (MX|SPF|DMARC) \|' dns-status.md)
-          CURRENT_RECORDS=$(awk '/<!-- DNS_STATUS_START -->/,/<!-- DNS_STATUS_END -->/' README.md | grep -E '^\s*\| (MX|SPF|DMARC) \|')
+          NEW_RECORDS=$(grep -E '^\s*\| (MX|SPF|DMARC|DKIM) \|' dns-status.md || true)
+          CURRENT_RECORDS=$(awk '/<!-- DNS_STATUS_START -->/,/<!-- DNS_STATUS_END -->/' README.md | grep -E '^\s*\| (MX|SPF|DMARC|DKIM) \|' || true)
 
           if [[ "$NEW_RECORDS" == "$CURRENT_RECORDS" ]]; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
@@ -176,7 +230,7 @@ jobs:
             ' README.md > README.md.tmp
             mv README.md.tmp README.md
           fi
-      
+
       - name: Commit changes
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
@@ -184,29 +238,40 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add README.md
           git commit -m "📧 Update mail alignment status [skip ci]"
-      
+
       - name: Push changes
         if: steps.check_changes.outputs.has_changes == 'true'
-        run: git push origin HEAD:${{ github.ref_name }}
-      
+        run: |
+          # Rebase in case anything landed on main since checkout
+          git pull --rebase origin ${{ github.ref_name }}
+          git push origin HEAD:${{ github.ref_name }}
+
       - name: Create check run summary
         if: always()
         run: |
           echo "## 📧 Mail Alignment Check Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          cat dns-status.md >> $GITHUB_STEP_SUMMARY
+          if [[ -f dns-status.md ]]; then
+            cat dns-status.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "_DNS check did not complete; no status table generated._" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Configuration Details" >> $GITHUB_STEP_SUMMARY
           echo "- Domain: \`jacksonasmith.com\`" >> $GITHUB_STEP_SUMMARY
           echo "- Check frequency: Every 6 hours" >> $GITHUB_STEP_SUMMARY
           echo "- DMARC Policy: \`${{ steps.dns.outputs.dmarc_policy }}\`" >> $GITHUB_STEP_SUMMARY
           echo "- Score: ${{ steps.dns.outputs.score }}/3" >> $GITHUB_STEP_SUMMARY
-      
-      - name: Cleanup
-        if: always()
-        run: rm -f dns-status.md README.md.tmp
+          if [[ "${{ steps.dns.outputs.query_error }}" == "true" ]]; then
+            echo "- ⚠️ Resolver errors occurred; README update was skipped" >> $GITHUB_STEP_SUMMARY
+          fi
 
-      - name: Notify on failure
-        if: failure()
+      - name: Keep scheduled workflow enabled
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          echo "::error::Mail alignment check workflow failed. Please review the logs."
+          # GitHub disables cron schedules after 60 days without repo activity,
+          # and this workflow intentionally goes quiet when DNS is stable.
+          # Re-enabling on every run resets that inactivity timer.
+          gh api -X PUT "repos/${{ github.repository }}/actions/workflows/update-mail-alignment.yml/enable"
