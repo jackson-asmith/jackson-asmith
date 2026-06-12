@@ -54,10 +54,11 @@ Scheduled DNS monitoring pipeline for automated DMARC configuration verification
 | Record | Status | Value |
 |--------|--------|-------|
 | MX | ✅ | `aspmx.l.google.com.` |
-| SPF | ✅ | Configured |
+| SPF | ✅ | `~all` |
 | DMARC | ✅ | `p=reject` |
+| DKIM | ✅ | `google` |
 
-*Last checked: 2026-04-07 17:04 UTC • Score: 3/3*
+*Last updated: 2026-06-12 15:13 UTC • Score: 3/3 (DKIM informational)*
 <!-- DNS_STATUS_END -->
 
 ## Beyond the Terminal
