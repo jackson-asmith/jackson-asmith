@@ -178,7 +178,7 @@ jobs:
           | DMARC | $DMARC_STATUS | \`p=$DMARC_POLICY\` |
           | DKIM | $DKIM_STATUS | \`${DKIM_SELECTOR:-not detected}\` |
 
-          *Last updated: $TIMESTAMP • Score: $SCORE/3 (DKIM informational)*
+          *Last updated: $TIMESTAMP • Score: $SCORE/3 (DKIM informational).*
           EOF
 
           # Output for later steps

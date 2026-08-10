@@ -4,22 +4,26 @@ I'm a Software Engineer based in Philadelphia with 10+ years of experience at th
 
 ## What I Work With
 
-**Software Engineering**
+### Software Engineering
+
 - Python, PowerShell, Ruby, Bash
 - Test suite development & code modernization
 - Microsoft Graph API & email infrastructure
 
-**Cloud & Infrastructure**
+### Cloud & Infrastructure
+
 - Azure, AWS, VMware vSphere
 - Infrastructure-as-Code (Terraform, Ansible)
 - High-availability architecture & disaster recovery
 
-**Observability & Automation**
+### Observability & Automation
+
 - New Relic, Zabbix, Prometheus
 - OpenTelemetry instrumentation
 - Self-hosted LLM infrastructure (Mistral, Mixtral)
 
-**Platform Engineering**
+### Platform Engineering
+
 - Linux/Windows server architecture
 - SQL Server clustering & availability groups
 - Zero Trust deployment & PKI management
@@ -38,15 +42,19 @@ I'm a Software Engineer based in Philadelphia with 10+ years of experience at th
 ## Featured Projects
 
 ### [PublicPowerShell](https://github.com/jackson-asmith/PublicPowerShell)
+
 A collection of PowerShell scripts and automation tools I've built for system administration tasks. Feel free to use, modify, or contribute!
 
 ### [apacheloganalyzer](https://github.com/jackson-asmith/apacheloganalyzer)
+
 A Ruby-based Apache log analyzer for quick insights into web server traffic and patterns.
 
 ### [LinuxConfig](https://github.com/jackson-asmith/LinuxConfig)
+
 Automated Linux server configuration script for standardizing new system setups—because manual configuration is so 2010.
 
 ### [Email Alignment Checker](https://github.com/jackson-asmith/jackson-asmith/tree/main/.github/workflows)
+
 Scheduled DNS monitoring pipeline for automated DMARC configuration verification with testing and monitoring.
 
 **Relatively live status of [jacksonasmith.com](https://jacksonasmith.com) DMARC alignment:**
@@ -58,7 +66,7 @@ Scheduled DNS monitoring pipeline for automated DMARC configuration verification
 | DMARC | ✅ | `p=reject` |
 | DKIM | ✅ | `google` |
 
-*Last updated: 2026-06-12 15:13 UTC • Score: 3/3 (DKIM informational)*
+*Last updated: 2026-06-12 15:13 UTC • Score: 3/3 (DKIM informational).*
 <!-- DNS_STATUS_END -->
 
 ## Beyond the Terminal
