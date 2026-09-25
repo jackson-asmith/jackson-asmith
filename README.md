@@ -2,6 +2,17 @@
 
 I'm a Software Engineer based in Philadelphia with 10+ years of experience at the intersection of infrastructure and software development. I bring an operator's instinct to software: I care about correctness, testability, and systems that don't page someone at 3am. These days I'm focused on building reliable software—establishing test suites, modernizing legacy codebases, and applying the same rigor I brought to infrastructure to the software that runs on top of it. When I'm not writing code or automation, you'll find me on hiking trails, carving ski slopes, or finding balance on the yoga mat. I'm equally at home debugging a flaky test suite, watching Formula 1, or getting lost in a good novel with a well-earned beer.
 
+## How I Approach Engineering
+
+- **Reliability is a feature:** systems shouldn't need heroics to operate
+- **Automation must reduce risk, not create it**
+- **Modernize incrementally:** improve what exists before reaching for a rewrite
+- **Governance should enable engineers:** make the compliant path the easiest path
+- **Testing comes before trust:** confidence comes from evidence, not familiarity
+- **Documentation is engineering work**
+
+More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmith.com/principles/)
+
 ## What I Work With
 
 ### Software Engineering
@@ -55,7 +66,7 @@ Automated Linux server configuration script for standardizing new system setups�
 
 ### [Email Alignment Checker](https://github.com/jackson-asmith/jackson-asmith/tree/main/.github/workflows)
 
-Scheduled DNS monitoring pipeline for automated DMARC configuration verification with testing and monitoring.
+Scheduled DNS monitoring pipeline for automated DMARC configuration verification with testing and monitoring. [Read the case study →](https://jacksonasmith.com/projects/email-alignment-checker/)
 
 **Relatively live status of [jacksonasmith.com](https://jacksonasmith.com) DMARC alignment:**
 <!-- DNS_STATUS_START -->
@@ -66,7 +77,7 @@ Scheduled DNS monitoring pipeline for automated DMARC configuration verification
 | DMARC | ✅ | `p=reject` |
 | DKIM | ✅ | `google` |
 
-*Last updated: 2026-06-12 15:13 UTC • Score: 3/3 (DKIM informational).*
+*Last changed: 2026-06-12 15:13 UTC • Score: 3/3 (DKIM informational).*
 <!-- DNS_STATUS_END -->
 
 ## Beyond the Terminal
@@ -80,6 +91,8 @@ When I'm not in the command line, I'm:
 
 ## Get In Touch
 
-- Website: [jacksonasmith.com](https://www.jacksonasmith.com)
+- Website: [jacksonasmith.com](https://jacksonasmith.com), including [projects & case studies](https://jacksonasmith.com/projects/) and my full [experience](https://jacksonasmith.com/experience/)
+- Email: [jackson@jacksonasmith.com](mailto:jackson@jacksonasmith.com)
+- LinkedIn: [jackson-a-smith](https://www.linkedin.com/in/jackson-a-smith/)
 - Location: Philadelphia, PA
 - Let's talk about: distributed systems, Ferrari's pitwall calls, ski recommendations, book swaps, or hiking trails
