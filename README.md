@@ -62,7 +62,7 @@ Context for each number: [jacksonasmith.com/experience](https://jacksonasmith.co
 
 ### [Keel](https://github.com/jackson-asmith/keel)
 
-Tested PowerShell modules for unattended automation: bounded HTTP retries and Graph-first mail that won't resend after an ambiguous failure. [Read the case study →](https://jacksonasmith.com/projects/keel/)
+PowerShell modules for unattended automation, CI-tested on Windows PowerShell 5.1 and PowerShell 7: bounded HTTP retries and Graph-first mail that won't resend after an ambiguous failure. [Read the case study →](https://jacksonasmith.com/projects/keel/)
 
 ### [LinuxConfig](https://github.com/jackson-asmith/LinuxConfig)
 
