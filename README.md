@@ -56,6 +56,8 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 - Part of the operations team that took a 1,200-server hybrid platform from 40–60% to 99.99% availability; I owned monitoring, automation, and three VMware datacenters
 - Eliminated $400K+ in annual outsourcing costs and cut monthly vulnerability exposure 70% with an automated patching pipeline
 
+Context for each number: [jacksonasmith.com/experience](https://jacksonasmith.com/experience/)
+
 ## Featured Projects
 
 ### [Keel](https://github.com/jackson-asmith/keel)
