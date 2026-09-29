@@ -50,13 +50,11 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 
 ## Recent Wins
 
+- Built an internal PowerShell standard library for a four-engineer team, now used in 24 production scripts (47 call sites) in its first repository, with shared test infrastructure and CI
+- Stood up the first Pester test suite and CI quality gates for an existing codebase; the tests caught a latent production bug during refactoring
+- Moved shared mail delivery to the Microsoft Graph API, retiring legacy SMTP dependencies
+- Part of the operations team that took a 1,200-server hybrid platform from 40–60% to 99.99% availability; I owned monitoring, automation, and three VMware datacenters
 - Eliminated $400K+ in annual outsourcing costs and cut monthly vulnerability exposure 70% with an automated patching pipeline
-- Improved backup recovery time objective from 24 hours to 4 hours with a hybrid-cloud backup rebuild
-- Reduced operational escalations by 50% over 12 months of legacy refactoring
-- Went from one to several libraries per day during lease refreshes via factory provisioning and dropship
-- Led hybrid-cloud platform serving 300+ offices nationwide
-
-Context for each number: [jacksonasmith.com/experience](https://jacksonasmith.com/experience/)
 
 ## Featured Projects
 
