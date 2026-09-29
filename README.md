@@ -64,10 +64,6 @@ Context for each number: [jacksonasmith.com/experience](https://jacksonasmith.co
 
 Tested PowerShell modules for unattended automation: bounded HTTP retries and Graph-first mail that won't resend after an ambiguous failure. [Read the case study →](https://jacksonasmith.com/projects/keel/)
 
-### [apacheloganalyzer](https://github.com/jackson-asmith/apacheloganalyzer)
-
-A Ruby-based Apache log analyzer for quick insights into web server traffic and patterns.
-
 ### [LinuxConfig](https://github.com/jackson-asmith/LinuxConfig)
 
 Automated Linux server configuration script for standardizing new system setups—because manual configuration is so 2010.
