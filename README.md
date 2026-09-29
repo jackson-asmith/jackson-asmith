@@ -1,6 +1,6 @@
 # Hi, I'm Jackson
 
-I'm a Software Engineer based in Philadelphia with 10+ years of experience at the intersection of infrastructure and software development. I bring an operator's instinct to software: I care about correctness, testability, and systems that don't page someone at 3am. These days I'm focused on building reliable software—establishing test suites, modernizing legacy codebases, and applying the same rigor I brought to infrastructure to the software that runs on top of it. When I'm not writing code or automation, you'll find me on hiking trails, carving ski slopes, or finding balance on the yoga mat. I'm equally at home debugging a flaky test suite, watching Formula 1, or getting lost in a good novel with a well-earned beer.
+I'm a software engineer in Philadelphia who spent ten years keeping production infrastructure running before moving into software. I bring an operator's instinct to code: I care about correctness, testability, and systems that don't page someone at 3am. These days I'm focused on building reliable software—establishing test suites, modernizing legacy codebases, and applying the same rigor I brought to infrastructure to the software that runs on top of it. When I'm not writing code or automation, you'll find me on hiking trails, carving ski slopes, or finding balance on the yoga mat. I'm equally at home debugging a flaky test suite, watching Formula 1, or getting lost in a good novel with a well-earned beer.
 
 ## How I Approach Engineering
 
@@ -18,8 +18,9 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 ### Software Engineering
 
 - Python, PowerShell, Ruby, Bash
-- Test suite development & code modernization
-- Microsoft Graph API & email infrastructure
+- Test suite development & code modernization (Pester)
+- CI quality gates with GitHub Actions
+- REST API integration: Microsoft Graph, GitHub Enterprise, Entra ID
 
 ### Cloud & Infrastructure
 
@@ -31,7 +32,8 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 
 - New Relic, Zabbix, Prometheus
 - OpenTelemetry instrumentation
-- Self-hosted LLM infrastructure (Mistral, Mixtral)
+- AI-assisted development with explicit review checkpoints
+- Local LLM deployment (Ollama, Mixtral)
 
 ### Platform Engineering
 
@@ -39,18 +41,29 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 - SQL Server clustering & availability groups
 - Zero Trust deployment & PKI management
 
+## Current Focus
+
+- Bringing test coverage and CI quality gates to existing codebases
+- Reliable, unattended API integrations: Microsoft Graph, GitHub, identity platforms
+- GitHub Enterprise governance and developer experience that doesn't slow teams down
+- AI-assisted development with explicit research, planning, and review checkpoints
+
 ## Recent Wins
 
-- Modernizing email delivery pipeline via Microsoft Graph API migration
-- Established test suites and driving phased code modernization strategy
-- Reduced operational escalations by 50% through infrastructure improvements
-- Architected three-node SQL availability cluster achieving 99.99% uptime
-- Saved $400K+ annually through automated patching pipeline
-- Reduced vulnerability exposure by 70% via systematic automation
-- Cut server provisioning time from 4 hours to 15 minutes
+- Eliminated $400K+ in annual outsourcing costs and cut monthly vulnerability exposure 70% with an automated patching pipeline
+- Architected a three-node SQL availability group, removing a single point of failure and reaching 99.99% uptime
+- Improved backup recovery time objective from 24 hours to 4 hours with a hybrid-cloud backup rebuild
+- Reduced operational escalations by 50% over 12 months of legacy refactoring
+- Went from one to several libraries per day during lease refreshes via factory provisioning and dropship
 - Led hybrid-cloud platform serving 300+ offices nationwide
 
+Context for each number: [jacksonasmith.com/experience](https://jacksonasmith.com/experience/)
+
 ## Featured Projects
+
+### [Keel](https://github.com/jackson-asmith/keel)
+
+Tested PowerShell modules for unattended automation: bounded HTTP retries and Graph-first mail that won't resend after an ambiguous failure. [Read the case study →](https://jacksonasmith.com/projects/keel/)
 
 ### [PublicPowerShell](https://github.com/jackson-asmith/PublicPowerShell)
 
@@ -64,9 +77,9 @@ A Ruby-based Apache log analyzer for quick insights into web server traffic and 
 
 Automated Linux server configuration script for standardizing new system setups—because manual configuration is so 2010.
 
-### [Email Alignment Checker](https://github.com/jackson-asmith/jackson-asmith/tree/main/.github/workflows)
+### [Email Alignment Checker](https://github.com/jackson-asmith/jackson-asmith/blob/main/.github/workflows/update-mail-alignment.yml)
 
-Scheduled DNS monitoring pipeline for automated DMARC configuration verification with testing and monitoring. [Read the case study →](https://jacksonasmith.com/projects/email-alignment-checker/)
+Scheduled GitHub Actions workflow that monitors this domain's SPF, DKIM, and DMARC records and commits only when something actually changes. [Read the case study →](https://jacksonasmith.com/projects/email-alignment-checker/)
 
 **Relatively live status of [jacksonasmith.com](https://jacksonasmith.com) DMARC alignment:**
 <!-- DNS_STATUS_START -->
