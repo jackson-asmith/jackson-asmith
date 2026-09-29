@@ -51,7 +51,6 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 ## Recent Wins
 
 - Eliminated $400K+ in annual outsourcing costs and cut monthly vulnerability exposure 70% with an automated patching pipeline
-- Architected a three-node SQL availability group, removing a single point of failure and reaching 99.99% uptime
 - Improved backup recovery time objective from 24 hours to 4 hours with a hybrid-cloud backup rebuild
 - Reduced operational escalations by 50% over 12 months of legacy refactoring
 - Went from one to several libraries per day during lease refreshes via factory provisioning and dropship
