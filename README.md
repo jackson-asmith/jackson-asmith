@@ -68,21 +68,11 @@ PowerShell modules for unattended automation, CI-tested on Windows PowerShell 5.
 
 Automated Linux server configuration script for standardizing new system setups—because manual configuration is so 2010.
 
-### [Email Alignment Checker](https://github.com/jackson-asmith/jackson-asmith/blob/main/.github/workflows/update-mail-alignment.yml)
+### [Email Alignment Checker](https://github.com/jackson-asmith/email-alignment-checker)
 
 Scheduled GitHub Actions workflow that monitors this domain's SPF, DKIM, and DMARC records and commits only when something actually changes. [Read the case study →](https://jacksonasmith.com/projects/email-alignment-checker/)
 
-**Relatively live status of [jacksonasmith.com](https://jacksonasmith.com) DMARC alignment:**
-<!-- DNS_STATUS_START -->
-| Record | Status | Value |
-|--------|--------|-------|
-| MX | ✅ | `aspmx.l.google.com.` |
-| SPF | ✅ | `~all` |
-| DMARC | ✅ | `p=reject` |
-| DKIM | ✅ | `google` |
-
-*Last changed: 2026-06-12 15:13 UTC • Score: 3/3 (DKIM informational).*
-<!-- DNS_STATUS_END -->
+[![Mail alignment](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jackson-asmith/email-alignment-checker/main/status.json)](https://github.com/jackson-asmith/email-alignment-checker)
 
 ## Beyond the Terminal
 
