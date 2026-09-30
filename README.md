@@ -67,7 +67,7 @@ PowerShell modules for unattended automation, CI-tested on Windows PowerShell 5.
 
 ### [LinuxConfig](https://github.com/jackson-asmith/LinuxConfig)
 
-Automated Linux server configuration script for standardizing new system setups—because manual configuration is so 2010.
+Modular Bash pipeline that bootstraps RHEL hosts into Active Directory and Red Hat Satellite: SSH, firewall, and audit hardening, Kerberos/SSSD domain join, and a self-healing domain rejoin. Every stage supports dry-run mode and is covered by bats tests and ShellCheck in CI.
 
 ### [Email Alignment Checker](https://github.com/jackson-asmith/email-alignment-checker)
 
