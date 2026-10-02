@@ -1,6 +1,6 @@
 # Hi, I'm Jackson
 
-I'm a software engineer in Philadelphia who spent ten years keeping production infrastructure running before moving into software. I bring an operator's instinct to code: I care about correctness, testability, and systems that don't page someone at 3am. These days I'm focused on building reliable software—establishing test suites, modernizing legacy codebases, and applying the same rigor I brought to infrastructure to the software that runs on top of it. When I'm not writing code or automation, you'll find me on hiking trails, carving ski slopes, or finding balance on the yoga mat. I'm equally at home debugging a flaky test suite, watching Formula 1, or getting lost in a good novel with a well-earned beer.
+I'm a software engineer in Philadelphia who spent ten years keeping production infrastructure running before moving into software. I bring an operator's instinct to code: I care about correctness, testability, and systems that don't page someone at 3am. These days I'm focused on building reliable software—establishing test suites, modernizing legacy codebases, and applying the same rigor I brought to infrastructure to the software that runs on top of it. That includes code written with AI help: it gets the same tests, review, and recorded design decisions as anything else.
 
 ## How I Approach Engineering
 
@@ -21,6 +21,8 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 - Test suite development & code modernization (Pester)
 - CI quality gates with GitHub Actions
 - REST API integration: Microsoft Graph, GitHub Enterprise, Entra ID
+- AI-assisted development that stays test-gated and reviewed (Claude Code, GitHub Copilot custom instructions)
+- Local models through Ollama (Qwen, DeepSeek)
 
 ### Cloud & Infrastructure
 
@@ -32,8 +34,6 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 
 - New Relic, Zabbix, Prometheus
 - OpenTelemetry instrumentation
-- AI-assisted development with explicit review checkpoints
-- Local LLM deployment (Ollama, Mixtral)
 
 ### Platform Engineering
 
