@@ -45,7 +45,7 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 
 - Bringing test coverage and CI quality gates to existing codebases
 - Reliable, unattended API integrations: Microsoft Graph, GitHub, identity platforms
-- GitHub Enterprise governance and developer experience that doesn't slow teams down
+- GitHub governance and security baselines that don't slow teams down
 - AI-assisted development with explicit research, planning, and review checkpoints
 
 ## Recent Wins
@@ -60,6 +60,14 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 Context for each number: [jacksonasmith.com/experience](https://jacksonasmith.com/experience/)
 
 ## Featured Projects
+
+### [gh-baseline](https://github.com/jackson-asmith/gh-baseline)
+
+A read-only `gh` extension that reports where your GitHub repositories drift from a tiered security baseline you declare once, in a file: branch rulesets, where required checks may come from, secret scanning, action pinning, and workflows that still reference secrets long after a repo went quiet. Anything the API won't show is reported as `unknown`, never `pass`. Written in Go with only the standard library. [Read the case study →](https://jacksonasmith.com/projects/gh-baseline/)
+
+```sh
+gh extension install jackson-asmith/gh-baseline
+```
 
 ### [Keel](https://github.com/jackson-asmith/keel)
 
@@ -78,6 +86,7 @@ Scheduled GitHub Actions workflow that monitors this domain's SPF, DKIM, and DMA
 ## Beyond the Terminal
 
 When I'm not in the command line, I'm:
+
 - Suffering Scuderia Ferrari fan (yes, *that* kind of reliability engineering)
 - Chasing powder on the slopes
 - Finding zen through yoga
