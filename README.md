@@ -56,6 +56,7 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 - Moved shared mail delivery to the Microsoft Graph API, retiring legacy SMTP dependencies
 - Part of the operations team that took a 1,200-server hybrid platform from 40–60% to 99.99% availability; I owned monitoring, automation, and three VMware datacenters
 - Eliminated $400K+ in annual outsourcing costs and cut monthly vulnerability exposure 70% with an automated patching pipeline
+- As LOPSA's vice president, led the board's search for a successor organization and moved every member to two years of ACM membership when the association dissolved in 2025
 
 Context for each number: [jacksonasmith.com/experience](https://jacksonasmith.com/experience/)
 
