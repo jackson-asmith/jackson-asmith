@@ -50,6 +50,7 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 
 ## Recent Wins
 
+- Designed an opt-in retry-safety option for Microsoft Kiota, the HTTP runtime under the Microsoft Graph SDKs, so a POST that may already have been processed isn't resent; at the maintainer's request, ported it to all 8 language SDKs, with [every PR merged upstream](https://jacksonasmith.com/writing/2026/one-retry-fix-eight-sdks/)
 - Built an internal PowerShell standard library for a four-engineer team, now used in 24 production scripts (47 call sites) in its first repository, with shared test infrastructure and CI
 - Stood up the first Pester test suite and CI quality gates for an existing codebase; the tests caught a latent production bug during refactoring
 - Built GitHub Enterprise billing reporting end to end, from an API ETL pipeline to Power BI dashboards and automated Copilot budget controls, then re-platformed the pipeline to Python so the data team could maintain it
