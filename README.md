@@ -17,12 +17,18 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 
 ### Software Engineering
 
-- Python, PowerShell, Ruby, Bash
-- Test suite development & code modernization (Pester)
-- CI quality gates with GitHub Actions
-- REST API integration: Microsoft Graph, GitHub Enterprise, Entra ID
+- PowerShell, Python, Bash, Ruby; contributed upstream in C#, Go, Java, TypeScript, PHP, and Dart (Microsoft Kiota)
+- Testing & CI: Pester, bats, ShellCheck, Go testing; GitHub Actions quality gates and egress firewall
+- HTTP & API engineering: retry and backoff policy, idempotency and duplicate-send safety, redirect handling; REST and GraphQL (Microsoft Graph, GitHub, Entra ID)
+- Library engineering: versioned modules, public/private API separation, architecture decision records
 - AI-assisted development that stays test-gated and reviewed (Claude Code, GitHub Copilot custom instructions)
 - Local models through Ollama (Qwen, DeepSeek)
+
+### GitHub Platform & Governance
+
+- GitHub Enterprise rulesets, required checks, and secret scanning
+- `gh` CLI extensions, including [gh-baseline](https://github.com/jackson-asmith/gh-baseline)
+- Copilot administration and cost controls through the billing API
 
 ### Cloud & Infrastructure
 
