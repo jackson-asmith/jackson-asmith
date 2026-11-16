@@ -60,8 +60,8 @@ More on each, with examples: [jacksonasmith.com/principles](https://jacksonasmit
 - Built an internal PowerShell standard library for a four-engineer team, now used in 24 production scripts (47 call sites) in its first repository, with shared test infrastructure and CI
 - Stood up the first Pester test suite and CI quality gates for an existing codebase; the tests caught a latent production bug during refactoring
 - Built GitHub Enterprise billing reporting end to end, from an API ETL pipeline to Power BI dashboards and automated Copilot budget controls, then re-platformed the pipeline to Python so the data team could maintain it
-- Part of the operations team that took a 1,200-server hybrid platform from 40–60% to 99.99% availability; I owned monitoring, automation, and three VMware datacenters
 - Eliminated $400K+ in annual outsourcing costs and cut monthly vulnerability exposure 70% with an automated patching pipeline
+- Part of the operations team that took a 1,200-server hybrid platform from 40–60% to 99.99% availability; I owned monitoring, automation, and three VMware datacenters
 - As LOPSA's vice president, led the board's search for a successor organization and moved every member to two years of ACM membership when the association dissolved in 2025
 
 Context for each number: [jacksonasmith.com/experience](https://jacksonasmith.com/experience/)
