@@ -70,7 +70,7 @@ Context for each number: [jacksonasmith.com/experience](https://jacksonasmith.co
 
 ### [gh-baseline](https://github.com/jackson-asmith/gh-baseline)
 
-A read-only `gh` extension that reports where your GitHub repositories drift from a tiered security baseline you declare once, in a file: branch rulesets, where required checks may come from, secret scanning, action pinning, and workflows that still reference secrets long after a repo went quiet. Anything the API won't show is reported as `unknown`, never `pass`. Written in Go with only the standard library. [Read the case study →](https://jacksonasmith.com/projects/gh-baseline/)
+A read-only `gh` extension that reports where your GitHub repositories drift from a tiered security baseline you declare once, in a file: branch rulesets, where required checks may come from, secret scanning, action pinning, and workflows that still reference secrets long after a repo went quiet. Anything the API won't show is reported as `unknown`, never `pass`. Written in Go, with one third-party dependency: a YAML parser for workflow files. [Read the case study →](https://jacksonasmith.com/projects/gh-baseline/)
 
 ```sh
 gh extension install jackson-asmith/gh-baseline
