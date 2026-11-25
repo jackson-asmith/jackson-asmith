@@ -86,7 +86,7 @@ Modular Bash pipeline that bootstraps RHEL hosts into Active Directory and Red H
 
 ### [Email Alignment Checker](https://github.com/jackson-asmith/email-alignment-checker)
 
-Scheduled GitHub Actions workflow that monitors this domain's SPF, DKIM, and DMARC records and commits only when something actually changes. [Read the case study →](https://jacksonasmith.com/projects/email-alignment-checker/)
+Scheduled GitHub Actions workflow that monitors this domain's SPF, DKIM, and DMARC records and commits only when something changes. [Read the case study →](https://jacksonasmith.com/projects/email-alignment-checker/)
 
 [![Mail alignment](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/jackson-asmith/email-alignment-checker/main/status.json)](https://github.com/jackson-asmith/email-alignment-checker)
 
